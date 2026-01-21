@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新年快乐 | Happy New Year</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;700&family=Ma+Shan+Zheng&display=swap"
+        rel="stylesheet">
+    <!-- Open Graph / WeChat Share Metadata -->
+    <meta property="og:title" content="这里有一份你的专属新年贺卡 (You have a Greeting Card)">
+    <meta property="og:description" content="Click to open to see the custom wish and animation! ✨">
+    <!-- Use relative URL to avoid github.io blocking on Vercel -->
+    <meta property="og:image" content="https://suoyff-afk.github.io/2026-Greaeting-Card/default_cover.jpg?v=3">
+    <meta property="og:type" content="website">
+
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css?v=42">
+    <!-- Confetti Library (Local for better access) -->
+    <script src="confetti.browser.min.js"></script>
+</head>
+
+<body>
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Background Music -->
+    <audio id="bgm" loop preload="auto">
+        <!-- Placeholder: User needs to provide bgm.mp3 or valid URL -->
+        <source src="bgm.mp3" type="audio/mpeg">
+    </audio>
+    <div id="musicControl" class="music-control">
+        <span class="music-icon">🎵</span>
+    </div>
+
+    <main class="card-container">
+        <div class="card" id="greetingCard">
+            <!-- Front of the card (Cover) -->
+            <div class="card-face card-front">
+                <div class="front-content">
+                    <img src="default_cover.jpg" alt="2026 Year of the Horse" class="cover-design">
+                    <p class="click-hint">点击打开 (Click to Open) ✨</p>
+                </div>
+            </div>
+            <!-- Inside of the card (Open state) - Postcard Style -->
+            <div class="card-inside postcard-style">
+                <!-- Horse Decorations (Transparent Background) - Symmetrical -->
+                <img src="horse_decoration.png" class="horse-decoration horse-left" alt="Horse">
+                <img src="horse_decoration.png" class="horse-decoration horse-right" alt="Horse">
+
+                <!-- To: Top Left -->
+                <p class="postcard-to">To: <span id="recipientName">Friend</span></p>
+
+                <!-- Custom Image Container -->
+                <div id="imageContainer" class="hidden postcard-image-container">
+                    <img id="greetingImage" src="" alt="Greeting Image">
+
+                    <!-- Corner Decorations (Now on Image) -->
+                    <img src="corner_decor.svg" class="corner-decor corner-tl" alt="Corner">
+                    <img src="corner_decor.svg" class="corner-decor corner-tr" alt="Corner">
+                    <img src="corner_decor.svg" class="corner-decor corner-bl" alt="Corner">
+                    <img src="corner_decor.svg" class="corner-decor corner-br" alt="Corner">
+                </div>
+
+                <!-- Message Center -->
+                <p class="greeting-message postcard-message" id="greetingMessage">
+                    愿新的一年，<br>
+                    万事胜意，岁岁平安。<br>
+                    Happy New Year!
+                </p>
+
+                <!-- From: Bottom Right -->
+                <p class="postcard-from">From: <span id="senderName">Me</span></p>
+
+                <!-- Film Date Stamp (Bottom Right) -->
+                <p class="postcard-date" id="cardDate">' 26 01 22</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Action Button (Below Card) -->
+    <button id="mainActionBtn" class="share-btn action-btn-below">
+        我也要送祝福 (Create or Share)
+    </button>
+
+    <!-- Watermark -->
+    <div class="watermark">Created by Suoyff</div>
+
+    <!-- Share Guide Toast (Hidden by default) -->
+    <div id="shareGuide" class="share-guide hidden">
+        <div class="guide-content glass">
+            <span class="close-guide">&times;</span>
+            <p style="font-size: 1.2rem; margin-bottom: 5px;">✅ 贺卡已就绪！ (Ready)</p>
+            <p>请点击右上角 <span class="dots">•••</span></p>
+            <p>选择 <strong>发送给朋友 (Send to Friend)</strong></p>
+            <div class="guide-arrow">↗</div>
+        </div>
+    </div>
+
+    <!-- Share Guide Toast (Hidden by default) -->
+    <div id="shareGuide" class="share-guide hidden">
+        <div class="guide-content glass">
+            <span class="close-guide">&times;</span>
+            <p style="font-size: 1.2rem; margin-bottom: 5px;">✅ 贺卡已就绪！ (Ready)</p>
+            <p>请点击右上角 <span class="dots">•••</span></p>
+            <p>选择 <strong>发送给朋友 (Send to Friend)</strong></p>
+            <div class="guide-arrow">↗</div>
+        </div>
+    </div>
+
+    <!-- Removed FAB as requested -->
+
+    <div id="shareModal" class="modal hidden">
+        <div class="modal-content glass">
+            <span class="close-btn">&times;</span>
+            <h2>生成祝福链接</h2>
+            <div class="input-group">
+                <label for="inputFrom">你的名字 (From):</label>
+                <input type="text" id="inputFrom" placeholder="例如: 小明">
+            </div>
+            <div class="input-group">
+                <label for="inputTo">朋友名字 (To):</label>
+                <input type="text" id="inputTo" placeholder="例如: 小红">
+            </div>
+            <div class="input-group">
+                <label for="inputMsg">祝福语 (Message):</label>
+                <textarea id="inputMsg" placeholder="默认: 愿新的一年，万事胜意..." rows="3"
+                    style="width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; font-family: inherit;"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="inputImage">图片链接 (Image URL):</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="inputImage" placeholder="粘贴链接 或 点击上传 ->">
+                    <label for="fileInput" class="icon-btn" title="上传图片/Upload Image">📤</label>
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                </div>
+                <!-- Upload Status -->
+                <p id="uploadStatus" style="font-size: 0.8rem; color: #666; margin-top: 5px;"></p>
+                <!-- Image Position Selector -->
+                <div id="imgPosGroup" class="img-pos-group hidden" style="margin-top: 8px;">
+                    <label style="font-size: 0.8rem; color: var(--text-dark);">图片焦点 (Focus):</label>
+                    <div class="pos-preview-row">
+                        <img id="imgPreview" class="img-preview" src="" alt="Preview">
+                        <div class="pos-buttons-vertical">
+                            <button type="button" data-pos="top" class="pos-btn">上</button>
+                            <button type="button" data-pos="center" class="pos-btn active">中</button>
+                            <button type="button" data-pos="bottom" class="pos-btn">下</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <!-- Merged Button: Preview & Share -->
+                <button id="generateLinkBtn" class="action-btn"
+                    style="background: var(--primary-red); color: white; width: 100%;">预览并分享 (Preview & Share)</button>
+            </div>
+            <p id="copyFeedback" class="feedback"></p>
+        </div>
+    </div>
+
+    <!-- Added version param to force refresh -->
+    <script src="script.js?v=80"></script>
+</body>
+
+</html>

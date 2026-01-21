@@ -1,0 +1,1126 @@
+/* CSS Variables for Theme */
+:root {
+    --primary-red: #D32F2F;
+    --deep-red: #8E0000;
+    --gold: #FFD700;
+    --gold-glow: #FFF9C4;
+    --text-dark: #3E2723;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: rgba(255, 255, 255, 0.5);
+
+    --font-heading: 'Great Vibes', cursive;
+    --font-chinese: 'Ma Shan Zheng', cursive;
+    --font-heading: 'Great Vibes', cursive;
+    --font-chinese: 'Ma Shan Zheng', cursive;
+    --font-body: 'Inter', sans-serif;
+    --neon-blue: #00f3ff;
+    /* Cyberpunk accent */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Background handled by canvas */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-body);
+    overflow: hidden;
+    color: var(--gold);
+}
+
+/* Canvas Background */
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at center, var(--primary-red), var(--deep-red));
+}
+
+/* Card Container & 3D Perspective */
+.card-container {
+    perspective: 1500px;
+    width: 90%;
+    max-width: 400px;
+    /* Responsive height: 600px or 85% of viewport height, whichever is smaller */
+    height: min(600px, 85vh);
+    z-index: 10;
+    cursor: pointer;
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.card.open {
+    transform: rotateY(-180deg);
+}
+
+/* Card Faces */
+/* Card Faces */
+.card-front,
+.card-inside {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+/* Improved Card Inside Background */
+.card-inside {
+    background: linear-gradient(180deg,
+            #fff9f0 0%,
+            #fff5e6 50%,
+            #ffe8d0 100%);
+    border: 3px solid var(--gold);
+}
+
+/* Subtle pattern overlay */
+.card-inside::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(211, 47, 47, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.card-inside>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================
+   POSTCARD STYLE LAYOUT
+   ============================================ */
+
+.postcard-style {
+    background: none !important;
+    /* Remove direct bg to allow transparency via pseudo */
+    border: none !important;
+    position: relative;
+    padding: 20px 25px 25px 25px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    isolation: isolate;
+    /* Create new stacking context */
+    overflow: hidden;
+    /* Clip the pseudo background */
+    z-index: 1;
+}
+
+/* Semi-transparent background via pseudo-element */
+.postcard-style::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('postcard_bg.png') center/cover no-repeat;
+    opacity: 0.9;
+    /* 90% opacity - less transparent */
+    z-index: -2;
+}
+
+/* Ensure content is above background */
+.postcard-style>* {
+    z-index: 2;
+}
+
+/* Horse Decoration - Base Style */
+.horse-decoration {
+    position: absolute;
+    bottom: 30px;
+    /* Lowered slightly */
+    width: 95px;
+    height: auto;
+    opacity: 0.22;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* CSS Cleaned */
+
+
+/* Right Horse */
+.horse-right {
+    right: 15px;
+}
+
+/* Left Horse - Mirrored */
+.horse-left {
+    left: 15px;
+    transform: scaleX(-1);
+}
+
+/* To: Top Left - Chinese font to match message */
+.postcard-to {
+    align-self: flex-start;
+    font-family: var(--font-chinese);
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+    /* Tighter gap to image */
+    z-index: 2;
+    /* Ensure above image if overlapping */
+}
+
+.postcard-to span {
+    font-weight: bold;
+    color: #8b4513;
+    /* Warm brown */
+    text-decoration: none;
+}
+
+/* Postcard Image Container */
+.postcard-image-container {
+    width: 100%;
+    max-width: 300px;
+    /* Reduced as requested */
+    margin: 15px auto 0 auto;
+    z-index: 1;
+    position: relative;
+    padding: 10px;
+    /* Add breathing room for corners */
+}
+
+/* Corner Decorations ON IMAGE */
+.corner-decor {
+    position: absolute;
+    width: 35px;
+    /* Slightly smaller for image corners */
+    height: 35px;
+    z-index: 10;
+    pointer-events: none;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* Corner decorations - More spacing from image */
+.corner-tl {
+    top: -2px;
+    left: -2px;
+}
+
+.corner-tr {
+    top: -2px;
+    right: -2px;
+    transform: scaleX(-1);
+}
+
+.corner-bl {
+    bottom: -2px;
+    left: -2px;
+    transform: scaleY(-1);
+}
+
+.corner-br {
+    bottom: -2px;
+    right: -2px;
+    transform: scale(-1);
+}
+
+#greetingImage {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    /* Lock shape to allow cropping control */
+    max-height: none;
+    /* Let width determine height */
+    object-fit: cover;
+    /* Enable cropping/positioning */
+    object-position: center;
+    border-radius: 2px;
+    /* Removed heavy shadow for cleaner look */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+/* Force contain for default image */
+.default-fit {
+    object-fit: contain !important;
+    background-color: transparent;
+}
+
+/* Date Stamp */
+/* Date Stamp - Film Style */
+/* Date Stamp - Quartz Date Back Style (Film) */
+.postcard-date {
+    text-align: right;
+    margin-right: 25px;
+    /* Align with From */
+    margin-top: -5px;
+    font-family: 'Courier New', Courier, monospace;
+    /* Digital look */
+    font-size: 0.9rem;
+    color: #cc5500;
+    /* Burnt Orange (Film Date Color) */
+    opacity: 0.9;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-shadow: 0 0 2px rgba(204, 85, 0, 0.4);
+    /* Slight glow */
+    z-index: 2;
+    transform: none;
+}
+
+/* Message - Centered with more space */
+.postcard-message {
+    text-align: center;
+    margin: 0.2em 0 45px 0;
+    /* Minimized gap (~0.2em) */
+    padding: 0;
+    line-height: 1.6;
+    /* Tighter line height to pull text up */
+    /* flex-grow: 1; REMOVED - this was pushing the text away! */
+    display: block;
+    /* Simplifies layout */
+    z-index: 1;
+}
+
+/* Hide typing cursor after animation */
+.postcard-message::after {
+    display: none !important;
+}
+
+/* From: Centered between horses' horizontal center line */
+.postcard-from {
+    position: absolute;
+    bottom: 68px;
+    /* Precise centering between mirrored horses */
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-chinese);
+    font-size: 1.35rem;
+    color: var(--text-dark);
+    z-index: 1;
+    margin: 0;
+}
+
+.postcard-from span {
+    font-weight: bold;
+    color: #8b4513;
+    /* Warm brown */
+    text-decoration: none;
+}
+
+/* Action Button Below Card */
+.action-btn-below {
+    margin-top: 20px;
+    z-index: 100;
+    padding: 12px 28px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.25);
+    transition: all 0.4s ease, opacity 0.5s ease;
+    /* Hidden by default */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+}
+
+/* Visible after card opens */
+.action-btn-below.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.action-btn-below:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(211, 47, 47, 0.35);
+}
+
+/* Image Position Selector */
+.img-pos-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.pos-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.pos-btn {
+    flex: 1;
+    padding: 5px 8px;
+    font-size: 0.75rem;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pos-btn:hover {
+    border-color: var(--gold);
+}
+
+.pos-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--text-dark);
+    font-weight: bold;
+}
+
+/* Preview Row Layout */
+.pos-preview-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.img-preview {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 6px;
+    border: 2px solid var(--gold);
+}
+
+.pos-buttons-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pos-buttons-vertical .pos-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* Watermark */
+.watermark {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Secondary Button inside card */
+.secondary-btn {
+    margin-top: 20px;
+    background: transparent;
+    border: 1px solid var(--primary-red);
+    color: var(--primary-red);
+    font-size: 0.9rem;
+    padding: 8px 16px;
+}
+
+.secondary-btn:hover {
+    background: rgba(211, 47, 47, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Floating Action Button */
+.fab-container {
+    position: fixed;
+    bottom: 40px;
+    /* Moved up slightly to make room for watermark if needed, or overlap is fine */
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: var(--primary-red);
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 100;
+    animation: bounce 2s infinite;
+}
+
+.fab-icon {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.fab-tooltip {
+    position: absolute;
+    right: 70px;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+    color: var(--primary-red);
+    font-weight: bold;
+}
+
+/* Music Control */
+.music-control {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    border: 2px solid var(--primary-red);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.music-icon {
+    font-size: 1.2rem;
+    user-select: none;
+}
+
+.music-control.playing {
+    animation: rotate 3s linear infinite;
+    background: var(--gold-glow);
+    box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--primary-red);
+    border-color: var(--neon-blue);
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Share Guide Toast */
+.share-guide {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    /* Highest priority */
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
+    pointer-events: auto;
+}
+
+.guide-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 20px 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    position: relative;
+    margin-top: 50px;
+    /* Offset from top */
+    margin-right: 10px;
+    animation: float 2s infinite ease-in-out;
+    border: 2px solid var(--primary-red);
+    color: var(--text-dark);
+}
+
+.close-guide {
+    position: absolute;
+    top: 5px;
+    left: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+}
+
+.guide-arrow {
+    position: absolute;
+    top: -25px;
+    right: 20px;
+    font-size: 2rem;
+    color: #fff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    animation: bounce 1s infinite;
+}
+
+.dots {
+    background: #eee;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.card-front {
+    background: #ce2828;
+    /* Match the red in the horse image */
+    color: var(--gold);
+    transform: rotateY(0deg);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.front-content {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.cover-design {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 70%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.title {
+    font-family: var(--font-chinese);
+    font-size: 5rem;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    margin-bottom: 0.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.subtitle {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--gold-glow);
+}
+
+.click-hint {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    animation: pulse 2s infinite;
+}
+
+/* Hidden Utility */
+.hidden {
+    display: none !important;
+}
+
+/* Inside Design */
+.card-inside {
+    /* background: transparent; */
+    background: transparent;
+    /* Default to transparent so subclass wins */
+    transform: rotateY(180deg);
+    color: var(--text-dark);
+    text-align: center;
+    border: none;
+    box-shadow: none;
+}
+
+.greeting-to,
+.greeting-from {
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    margin: 1rem 0;
+    color: var(--deep-red);
+}
+
+.greeting-message {
+    font-family: var(--font-chinese);
+    font-size: 2rem;
+    line-height: 1.6;
+    margin: 2rem 0;
+    color: var(--primary-red);
+    min-height: 100px;
+    /* Prevent layout jump */
+}
+
+/* Blinking cursor for typewriter */
+.greeting-message::after {
+    content: '|';
+    animation: blink 1s infinite;
+    color: var(--gold);
+    opacity: 1;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+span {
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-color: var(--gold);
+}
+
+/* Share Button */
+.share-section {
+    margin-top: auto;
+}
+
+.share-btn {
+    background: var(--primary-red);
+    color: var(--gold);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.share-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(211, 47, 47, 0.4);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 350px;
+    position: relative;
+    text-align: left;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 10px;
+    background: var(--gold);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--deep-red);
+}
+
+.icon-btn {
+    background: #eee;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.icon-btn:hover {
+    background: #ddd;
+}
+
+.icon-btn:active {
+    transform: scale(0.95);
+}
+
+.feedback {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: green;
+}
+
+/* Keyframes */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments */
+/* Responsive adjustments for Mobile & Short Screens */
+@media (max-width: 450px),
+(max-height: 700px) {
+
+    .card-front,
+    .card-inside {
+        padding: 1.5rem;
+        /* Reduce padding */
+    }
+
+    .title {
+        font-size: 3.5rem;
+        /* Smaller title */
+        margin-bottom: 0.2rem;
+    }
+
+    .subtitle {
+        font-size: 2rem;
+        /* Smaller subtitle */
+    }
+
+    .click-hint {
+        margin-top: 1.5rem;
+        font-size: 0.8rem;
+    }
+
+    .greeting-message {
+        font-size: 1.5rem;
+        /* Smaller message text */
+        margin: 1rem 0;
+    }
+
+    .greeting-to,
+    .greeting-from {
+        font-size: 1rem;
+        margin: 0.5rem 0;
+    }
+}
+
+/* Extra small screens */
+@media (max-height: 600px) {
+    .title {
+        font-size: 3rem;
+    }
+
+    .subtitle {
+        font-size: 1.8rem;
+    }
+}
+
+/* --- Redesigned Share Guide (Top-Right Bubble) --- */
+.share-guide {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    /* Transparent background to see the card! */
+    background: rgba(0, 0, 0, 0.05);
+    pointer-events: none;
+    /* Let clicks pass through to card */
+    display: block;
+    /* Not flex center anymore */
+}
+
+.share-guide.hidden {
+    display: none;
+}
+
+.guide-content {
+    pointer-events: auto;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    /* Top Right Corner */
+    width: auto;
+    max-width: 250px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--gold);
+    color: var(--text-dark);
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Arrow pointing up-right */
+.guide-arrow {
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid var(--gold);
+    transform: none;
+    font-size: 0;
+    animation: none;
+}
+
+.close-guide {
+    position: absolute;
+    top: 5px;
+    left: 8px;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #999;
+}
+
+/* ============================================
+   VIRTUAL ENVELOPE ANIMATION
+   ============================================ */
+
+.envelope-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at center, #b71c1c 0%, #7f0000 100%);
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.envelope-wrapper.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.envelope {
+    position: relative;
+    width: 320px;
+    height: 220px;
+    cursor: pointer;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+}
+
+.envelope-body {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #c62828 0%, #b71c1c 100%);
+    border-radius: 8px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid var(--gold);
+    overflow: hidden;
+}
+
+.envelope-letter-preview {
+    width: 80%;
+    height: 60%;
+    background: #fff;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.envelope-hint {
+    font-family: var(--font-chinese);
+    font-size: 1.2rem;
+    color: var(--gold);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(180deg, #d32f2f 0%, #c62828 100%);
+    border-radius: 8px 8px 0 0;
+    border: 3px solid var(--gold);
+    border-bottom: none;
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform 0.8s ease;
+    z-index: 10;
+    /* Triangle flap shape */
+    clip-path: polygon(0 0, 100% 0, 100% 30%, 50% 100%, 0 30%);
+}
+
+.envelope-flap::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: var(--gold);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+/* Opening Animation */
+.envelope-wrapper.opening .envelope-flap {
+    transform: rotateX(-180deg);
+}
+
+.envelope-wrapper.opening .envelope-body {
+    animation: cardRise 1s ease 0.6s forwards;
+}
+
+@keyframes cardRise {
+    0% {
+        transform: translateY(0);
+    }
+
+    100% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+}
+
+/* Mobile adjustments */
+@media (max-width: 400px) {
+    .envelope {
+        width: 280px;
+        height: 190px;
+    }
+
+    .envelope-hint {
+        font-size: 1rem;
+    }
+}
+
+/* ============================================
+   CARD-FRONT ENVELOPE STYLE
+   ============================================ */
+
+.card-front.envelope-style {
+    background: linear-gradient(145deg, #c62828 0%, #b71c1c 50%, #7f0000 100%);
+    border: 4px solid var(--gold);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.envelope-seal {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 3rem;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+    animation: float 3s ease-in-out infinite;
+}
+
+.envelope-text {
+    font-family: var(--font-chinese);
+    font-size: 2rem;
+    color: var(--gold);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    margin-bottom: 10px;
+}
+
+.envelope-subtext {
+    font-family: var(--font-cursive);
+    font-size: 1.2rem;
+    color: rgba(255, 215, 0, 0.8);
+    margin-bottom: 30px;
+}
+
+.card-front.envelope-style .click-hint {
+    background: rgba(255, 215, 0, 0.2);
+    padding: 10px 25px;
+    border-radius: 30px;
+    border: 1px solid var(--gold);
+    animation: pulse 1.5s ease-in-out infinite;
+}
